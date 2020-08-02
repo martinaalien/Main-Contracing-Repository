@@ -1,0 +1,16 @@
+################# 50 characters #################
+# Short summary, preferably below 50 characters
+
+
+###################### Linebreak at 72 characters #####################
+# Detailed explanation of what problem this commit is solving and WHY 
+# this change is made, NOT how. IMPORTANT: Leave an empty line between 
+# this section and the summary above, as well as between this section 
+# and the file list below. Also, no lines should be wider than 72
+# characters.
+
+
+# Short summary of the changes made to each file
+
+# Jira issues
+CT-

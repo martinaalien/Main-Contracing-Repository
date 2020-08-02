@@ -1,0 +1,79 @@
+#!/usr/bin/env python
+
+import sys
+import subprocess
+
+if len(sys.argv) < 3:
+    print("[POLICY] No commit message template specified. Try running install_hooks script again.")
+    sys.exit(1)
+
+commit_msg_filename = sys.argv[1]
+commit_msg_source = sys.argv[2]
+
+def remove_git_commit_message_template():
+    with open(commit_msg_filename, "r") as f:
+        contents = f.read()
+    
+    contents = contents[:contents.find("# Please enter")-1]
+
+    with open(commit_msg_filename, "w") as f:
+        f.write(contents)
+
+def add_staged_files_list():
+    staged_files = subprocess.check_output("git diff --name-status --cached", shell=True).decode("ascii").split("\n")
+
+    staged_files = staged_files[:-1] # remove empty "\n" element 
+
+    added_files = [filename for filename in staged_files if filename[0] == "A"]
+    modified_files = [filename for filename in staged_files if filename[0] == "M"]
+    deleted_files = [filename for filename in staged_files if filename[0] == "D"]
+
+    with open(commit_msg_filename, "r") as f:
+        contents = f.readlines()
+
+    index = contents.index("# Short summary of the changes made to each file\n") + 1
+
+    if len(added_files) > 0:
+        contents.insert(index, "Files added:\n")
+        index += 1
+        for filename in added_files:
+            contents.insert(index, "- {}: \n".format(filename.replace("A\t", ""))) # remove prefix from git
+            index += 1
+        contents.insert(index, "\n")
+        index += 1
+    
+    if len(modified_files) > 0:
+        contents.insert(index, "Files modified:\n")
+        index += 1
+        for filename in modified_files:
+            contents.insert(index, "- {}: \n".format(filename.replace("M\t", ""))) # remove prefix from git
+            index += 1
+        contents.insert(index, "\n")
+        index += 1
+
+    if len(deleted_files) > 0:
+        contents.insert(index, "Files deleted:\n")
+        index += 1
+        for filename in deleted_files:
+            contents.insert(index, "- {}: \n".format(filename.replace("D\t", ""))) # remove prefix from git
+            index += 1
+        contents.insert(index, "\n")
+        index += 1
+
+    with open(commit_msg_filename, "w") as f:
+        f.write("".join(contents))
+      
+
+def main():
+    if commit_msg_source == "message":
+        print("[POLICY] Commit message template not used, run 'git commit' without '-m' option. Commit rejected.")
+        sys.exit(1)
+    elif commit_msg_source == "template":
+        remove_git_commit_message_template()
+        add_staged_files_list()
+    elif commit_msg_source == "merge":
+        pass # Let the default git merge message template be used
+    else: # a squash
+        pass # Let the default git squash message template be used
+
+main()

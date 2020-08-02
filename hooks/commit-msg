@@ -1,0 +1,20 @@
+#!/usr/bin/env python
+
+import sys
+import re
+
+# Arguments
+commit_msg_filename = sys.argv[1]
+
+# Check that message contains issue code CT
+def check_message_format():
+    issue_code_regex = "CT-\d+"
+
+    with open(commit_msg_filename, "r") as file:
+        commit_msg = file.read()
+
+        if not re.findall(issue_code_regex, commit_msg):
+            print("[POLICY] Commit message missing issue code. Commit rejected.")
+            sys.exit(1)
+
+check_message_format()

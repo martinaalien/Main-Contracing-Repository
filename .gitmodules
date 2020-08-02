@@ -1,0 +1,3 @@
+[submodule "projects/git-submodule-test"]
+	path = projects/git-submodule-test
+	url = git@bitbucket.org:contracing/git-submodule-test.git

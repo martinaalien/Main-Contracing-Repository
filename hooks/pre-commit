@@ -1,0 +1,83 @@
+#!/usr/bin/env python
+
+import subprocess 
+import sys
+import os
+
+def check_if_ascii(): 
+
+    try: subprocess.check_output("git diff --name-only --cached -z", shell=True).decode("ascii")
+    except:
+        print("[POLICY] One or more staged files includes non-ASCII characters. Commit rejected.")
+        sys.exit(1)
+
+
+def format_code():
+    
+    staged_files = subprocess.check_output("git diff --name-only --cached", shell=True).decode("ascii").split("\n")
+    
+    for filename in staged_files:
+        if filename[-2:] == ".c" or filename[-2:] == ".h":
+            print("[POLICY] Auto formatting {} using clang-format".format(filename))
+            subprocess.call("clang-format -i -style=file {}".format(filename), shell=True)
+            subprocess.call("git add {}".format(filename), shell=True)
+
+def check_branch_name():
+    branch_name = subprocess.check_output("git rev-parse --abbrev-ref HEAD", shell=True)[:-1] # remove \n
+
+    if branch_name == "master":
+        sys.stdin = open("/dev/tty") # this is needed for raw_input to work when git is calling the hook
+        ans = raw_input("[WARNING] You are attempting to commit to master. If the master branch is protected this commit will be rejected.\nContinue? [Y/n] ")
+        if ans == "" or ans.strip().lower() == "y" or ans.strip().lower() == "yes":
+            return
+        else:
+            print("Aborting commit.")
+            sys.exit(1)
+    elif branch_name == "dev":
+        return
+
+    name_fields = branch_name.split("/")
+
+    if len(name_fields) < 2:
+        print("[POLICY] Wrong branch name format. Format is user/category/description (no caps) (without user for release branches).\nCommit rejected.")
+        print("Use \"git branch -m <new-branch-name>\" to change the name of the branch.")
+        sys.exit(1)
+
+    repo_path = os.getcwd()
+    
+    with open("{}/hooks/.users".format(repo_path), "r") as f:
+        users = f.read().split("\n")
+        user_last_names = [name.split(" ")[-1].lower() for name in users]
+
+    with open("{}/hooks/.branch-categories".format(repo_path), "r") as f:
+        categories = f.read().split("\n")[:-1]
+
+    # special case for release branch
+    if "release" in name_fields:
+        if name_fields[0] == "release" and len(name_fields) == 2:
+            return # correct format
+        else:
+            print("[POLICY] Wrong branch name format for release branch. Format is release/description (no caps).\nCommit rejected.")
+            print("Use \"git branch -m <new-branch-name>\" to change the name of the branch.")
+            sys.exit(1)
+
+    if name_fields[0] not in user_last_names:
+        print("[POLICY] Wrong branch name format, user field not recognized. Format is user/category/description (no caps).\nCommit rejected.")
+        print("Use \"git branch -m <new-branch-name>\" to change the name of the branch.")
+        sys.exit(1)
+    elif name_fields[1] not in categories:
+        print("[POLICY] Wrong branch name format, category field not recognized. Format is user/category/description (no caps).\nCommit rejected.")
+        print("Use \"git branch -m <new-branch-name>\" to change the name of the branch.")
+        sys.exit(1)
+    elif len(name_fields) != 3 or len(name_fields) == 3 and name_fields[2] == "": # special case for empty description
+        print("[POLICY] Wrong branch name format. Format is user/category/description (no caps).\nCommit rejected.")
+        print("Use \"git branch -m <new-branch-name>\" to change the name of the branch.")
+        sys.exit(1)
+    else:
+        return # correct format
+        
+
+
+check_if_ascii()
+format_code()
+check_branch_name()

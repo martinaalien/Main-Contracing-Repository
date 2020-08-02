@@ -1,0 +1,51 @@
+#!/usr/bin/env python
+
+import subprocess
+import os
+import sys
+
+def format_whitespace_in_path(path):
+
+    formatted_path = ""
+
+    for char in path:
+        if char == " ":
+            formatted_path += "\\"
+        formatted_path += char
+    
+    return formatted_path
+
+def install_hooks():
+
+    cwd = os.getcwd()
+    
+    try:
+        main_repo_path_raw = cwd[:cwd.index("/contracing")]
+    except:
+        print("Failed to install hooks. Please make sure you are within the contracing repo.")
+        sys.exit(1)
+    
+    main_repo_path_raw = main_repo_path_raw + "/contracing"
+    main_repo_path = format_whitespace_in_path(main_repo_path_raw)
+    
+    # Install for the central repo
+    subprocess.call("rm -f {}/.git/hooks/*".format(main_repo_path), shell=True)
+    subprocess.call("cp {}/hooks/* {}/.git/hooks".format(main_repo_path, main_repo_path), shell=True)
+    
+    subprocess.call("git config commit.template {}/hooks/.commit-msg-template".format(main_repo_path), shell=True)
+
+    # Install for all submodules
+    submodules = os.listdir("{}/.git/modules/projects".format(main_repo_path_raw))
+    
+    for module in submodules:
+        module_git_dir_path = "{}/.git/modules/projects/{}".format(main_repo_path, module)
+        module_repo_path = "{}/projects/{}".format(main_repo_path_raw, module)
+
+        subprocess.call("rm -f {}/hooks/*".format(module_git_dir_path), shell=True)
+        subprocess.call("cp {}/hooks/* {}/hooks".format(main_repo_path, module_git_dir_path), shell=True)
+
+        subprocess.call("git config commit.template {}/hooks/.commit-msg-template".format(main_repo_path), cwd="{}".format(module_repo_path), shell=True)
+
+    print("Hooks installed/updated correctly")
+
+install_hooks()
