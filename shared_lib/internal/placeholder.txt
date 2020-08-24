@@ -1,0 +1,2 @@
+This is a placeholder for internal libraries. Delete when first library added.
+

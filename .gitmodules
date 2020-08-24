@@ -1,3 +1,8 @@
-[submodule "projects/git-submodule-test"]
-	path = projects/git-submodule-test
-	url = git@bitbucket.org:contracing/git-submodule-test.git
+[submodule "projects/wristband"]
+	path = projects/wristband
+	url = git@bitbucket.org:contracing/wristband.git
+	branch = master
+[submodule "projects/hub"]
+	path = projects/hub
+	url = git@bitbucket.org:contracing/hub.git
+	branch = master
