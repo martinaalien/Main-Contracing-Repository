@@ -1,0 +1,22 @@
+image: ubuntu:18.04
+
+pipelines:
+  default:
+    - step:
+        name: Build and test
+        script:
+          - apt update
+          - apt install -y gcc gcovr ruby git
+          - gem install ceedling
+          - git clone git@bitbucket.org:contracing/contracing.git && cd contracing
+          - PROJECT_NAME="project-name"   # replace project-name with your project/repo name 
+          - git submodule update --init projects/$PROJECT_NAME
+          - cd projects/$PROJECT_NAME
+          - git checkout $BITBUCKET_BRANCH
+          - |
+            set +e
+            ceedling gcov:all
+            RETURN_CODE=$?
+            mkdir ../../../test-reports && cp test_build/artifacts/gcov/report.xml ../../../test-reports
+            if [ $RETURN_CODE -eq 1 ]; then exit 1; fi
+            set -e
