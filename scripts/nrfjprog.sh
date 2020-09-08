@@ -40,7 +40,7 @@ DEVICE=0
 if [ "$1" = "--flash" ]; then
     HEX=$2
     DEVICE=$3
-elif ["$1" = "--flash-softdevice"]; then
+elif [ "$1" = "--flash-softdevice" ]; then
     HEX=$2
     DEVICE=$3
 else
@@ -58,7 +58,8 @@ elif [ "$DEVICE" = "HUB" ]; then
     echo -e "\n${GREEN}HUB selected ${RESET}"
     SERIAL_NUMBER=683425861
 else
-    echo -e "\n${RED}THE DEVICE YOU ARE TRYING TO FLASH DOES NOT EXIST ${RESET}\n"
+    echo -e "\n${RED}THE DEVICE YOU ARE TRYING TO REACH, ${DEVICE}, DOES NOT EXIST"
+    echo -e "\n Available devices are WB1, WB2 and HUB ${RESET}\n"
     echo "$USAGE"
     exit 1
 fi
