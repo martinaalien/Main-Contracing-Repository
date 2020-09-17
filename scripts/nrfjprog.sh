@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # This is a script created to program nRF bluetooth chips. Specificially,
-# the nRF52840. The register addresses are gotten from infocenter.nordicsemi.no.
+# the nRF52833. The register addresses are gotten from infocenter.nordicsemi.no.
 # The script contains hard-coded paths to files that may need to changed if files are 
 # moved.
 
@@ -50,16 +50,16 @@ fi
 # Select the correct serial number for the device you want to program
 if [ "$DEVICE" = "WB1" ]; then
     echo -e "\n${GREEN}WB1 selected ${RESET}"
-    SERIAL_NUMBER=683210617
+    SERIAL_NUMBER=685105071
 elif [ "$DEVICE" = "WB2" ]; then
     echo -e "\n${GREEN}WB2 selected ${RESET}"
-    SERIAL_NUMBER=683815900
-elif [ "$DEVICE" = "HUB" ]; then
-    echo -e "\n${GREEN}HUB selected ${RESET}"
-    SERIAL_NUMBER=683425861
+    SERIAL_NUMBER=685726740
+elif [ "$DEVICE" = "WB3" ]; then
+    echo -e "\n${GREEN}WB3 selected ${RESET}"
+    SERIAL_NUMBER=685239688
 else
     echo -e "\n${RED}THE DEVICE YOU ARE TRYING TO REACH, ${DEVICE}, DOES NOT EXIST"
-    echo -e "\n Available devices are WB1, WB2 and HUB ${RESET}\n"
+    echo -e "\n Available devices are WB1, WB2 and WB3 ${RESET}\n"
     echo "$USAGE"
     exit 1
 fi
@@ -67,7 +67,7 @@ fi
 TOOLCHAIN_PREFIX=arm-none-eabi
 # Assume the tools are on the system path
 TOOLCHAIN_PATH=
-JLINK_OPTIONS="-device NRF52840_XXAA -USB $SERIAL_NUMBER -if swd -speed 1000"
+JLINK_OPTIONS="-device NRF52833_XXAA -USB $SERIAL_NUMBER -if swd -speed 1000"
 
 JLINK="/home/ct/Downloads/JLink_Linux_V682c_arm/JLinkExe $JLINK_OPTIONS"
 JLINKGDBSERVER="/home/ct/Downloads/JLink_Linux_V682c_arm/JLinkGDBServer $JLINK_OPTIONS"
@@ -147,7 +147,7 @@ elif [ "$1" = "--rtt" ]; then
         return
     }
     echo -e "${STATUS_COLOR}Starting RTT Server...${RESET}"
-    JLinkExe -device NRF52840_XXAA -USB $SERIAL_NUMBER -if swd -speed 1000 &
+    JLinkExe -device NRF52833_XXAA -USB $SERIAL_NUMBER -if swd -speed 1000 &
     JLINK_PID=$!
     sleep 1
     echo -e "\n${STATUS_COLOR}Connecting to RTT Server...${RESET}"
