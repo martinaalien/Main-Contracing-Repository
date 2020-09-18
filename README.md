@@ -18,11 +18,8 @@ Information about Git related issues can be found on the
 
 ## Requirements
 
-The git hooks used in this project requires python 2.7 which can be installed 
-like this
-
 ```
-sudo apt install python
+sudo apt install -y python clang-format
 ```
 
 ## Installing

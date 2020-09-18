@@ -43,13 +43,14 @@ def check_branch_name():
         print("Use \"git branch -m <new-branch-name>\" to change the name of the branch.")
         sys.exit(1)
 
-    repo_path = os.getcwd()
+    cwd = os.getcwd()
+    main_repo_path = cwd[:cwd.index("/contracing")] + "/contracing"
     
-    with open("{}/hooks/.users".format(repo_path), "r") as f:
+    with open("{}/hooks/.users".format(main_repo_path), "r") as f:
         users = f.read().split("\n")
         user_last_names = [name.split(" ")[-1].lower() for name in users]
 
-    with open("{}/hooks/.branch-categories".format(repo_path), "r") as f:
+    with open("{}/hooks/.branch-categories".format(main_repo_path), "r") as f:
         categories = f.read().split("\n")[:-1]
 
     # special case for release branch
