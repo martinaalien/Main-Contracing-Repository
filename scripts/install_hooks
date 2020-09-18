@@ -30,7 +30,7 @@ def install_hooks():
     
     # Install for the central repo
     subprocess.call("rm -f {}/.git/hooks/*".format(main_repo_path), shell=True)
-    subprocess.call("cp {}/hooks/* {}/.git/hooks".format(main_repo_path, main_repo_path), shell=True)
+    subprocess.call("cp -r {}/hooks/ {}/.git/".format(main_repo_path, main_repo_path), shell=True)
     
     subprocess.call("git config commit.template {}/hooks/.commit-msg-template".format(main_repo_path), shell=True)
 
@@ -42,7 +42,7 @@ def install_hooks():
         module_repo_path = "{}/projects/{}".format(main_repo_path_raw, module)
 
         subprocess.call("rm -f {}/hooks/*".format(module_git_dir_path), shell=True)
-        subprocess.call("cp {}/hooks/* {}/hooks".format(main_repo_path, module_git_dir_path), shell=True)
+        subprocess.call("cp -r {}/hooks/ {}".format(main_repo_path, module_git_dir_path), shell=True)
 
         subprocess.call("git config commit.template {}/hooks/.commit-msg-template".format(main_repo_path), cwd="{}".format(module_repo_path), shell=True)
 
