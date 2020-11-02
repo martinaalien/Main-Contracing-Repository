@@ -2,10 +2,6 @@
 	path = projects/wristband
 	url = git@bitbucket.org:contracing/wristband.git
 	branch = master
-[submodule "projects/hub"]
-	path = projects/hub
-	url = git@bitbucket.org:contracing/hub.git
-	branch = master
 [submodule "projects/pyhub"]
 	path = projects/pyhub
 	url = git@bitbucket.org:contracing/pyhub.git
