@@ -6,3 +6,7 @@
 	path = projects/hub
 	url = git@bitbucket.org:contracing/hub.git
 	branch = master
+[submodule "projects/pyhub"]
+	path = projects/pyhub
+	url = git@bitbucket.org:contracing/pyhub.git
+	branch = master
