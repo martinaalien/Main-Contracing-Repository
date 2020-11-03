@@ -6,3 +6,7 @@
 	path = projects/pyhub
 	url = git@bitbucket.org:contracing/pyhub.git
 	branch = master
+[submodule "shared_lib/external/bluezero"]
+	path = shared_lib/external/bluezero
+	url = git@bitbucket.org:contracing/bluezero.git
+	branch = contracing-master
