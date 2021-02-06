@@ -10,3 +10,7 @@
 	path = shared_lib/external/bluezero
 	url = git@bitbucket.org:contracing/bluezero.git
 	branch = contracing-master
+[submodule "projects/gaens"]
+	path = projects/gaens
+	url = git@bitbucket.org:contracing/gaens.git
+	branch = master
