@@ -1,16 +1,4 @@
-[submodule "projects/wristband"]
-	path = projects/wristband
-	url = git@bitbucket.org:contracing/wristband.git
-	branch = master
-[submodule "projects/pyhub"]
-	path = projects/pyhub
-	url = git@bitbucket.org:contracing/pyhub.git
-	branch = master
-[submodule "shared_lib/external/bluezero"]
-	path = shared_lib/external/bluezero
-	url = git@bitbucket.org:contracing/bluezero.git
-	branch = contracing-master
 [submodule "projects/gaens"]
 	path = projects/gaens
-	url = git@bitbucket.org:contracing/gaens.git
-	branch = master
+	url = git@github.com:martinaalien/Contracing.git
+	branch = main
