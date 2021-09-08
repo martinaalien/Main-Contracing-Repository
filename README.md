@@ -15,13 +15,13 @@ sudo apt install -y python clang-format
 
 ## Installing
 
-In order to clone the contracing repository and all submodules within it, run  
-the following git clone command (assuming you have set up SSH on your Github  
-user). It is then important to install the git hooks properly using the  
-script `install_hooks`.
+In order to clone the Main-Contracing-Repository repository and all submodules  
+within it, run the following git clone command (assuming you have set up SSH  
+on your Github user). It is then important to install the git hooks properly  
+using the script `install_hooks`.
 
 ```
-git clone --recurse-submodules git@bitbucket.org:contracing/contracing.git/
-cd contracing
+git clone --recurse-submodules git@github.com:martinaalien/Main-Contracing-Repository.git
+cd Main-Contracing-Repository
 scripts/install_hooks
 ```
