@@ -1,4 +1,4 @@
-[submodule "projects/gaens"]
-	path = projects/gaens
+[submodule "projects/Contracing"]
+	path = projects/Contracing
 	url = git@github.com:martinaalien/Contracing.git
 	branch = main
