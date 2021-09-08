@@ -2,7 +2,7 @@
 
 # This is a script created to program nRF bluetooth chips. Specificially,
 # the nRF52833. The register addresses are gotten from infocenter.nordicsemi.no.
-# The script contains hard-coded paths to files that may need to changed if files are 
+# The script contains hard-coded paths to files that may need to changed if files are
 # moved.
 
 # This prints some information if the nrfjprog command is used incorrectly.
@@ -21,7 +21,6 @@ Where action is one of
   --pin-reset
   --erase-all
   --flash
-  --flash-softdevice
   --rtt
   --gdbserver
   --recover
@@ -33,14 +32,13 @@ RESET="\033[0m"
 
 STATUS_COLOR=$GREEN
 SERIAL_NUMBER=0
-HEX=0
+HEX=/home/ct/projects/ContactTracing/repos/contracing/projects/gaens/build/zephyr/zephyr.hex
 DEVICE=0
+NRF_VERSION=0
 
+DEVICE=$2
 # If flashing, get the hex file path and device
 if [ "$1" = "--flash" ]; then
-    HEX=$2
-    DEVICE=$3
-elif [ "$1" = "--flash-softdevice" ]; then
     HEX=$2
     DEVICE=$3
 else
@@ -50,13 +48,24 @@ fi
 # Select the correct serial number for the device you want to program
 if [ "$DEVICE" = "WB1" ]; then
     echo -e "\n${GREEN}WB1 selected ${RESET}"
+    NRF_VERSION=NRF52833_XXAA
     SERIAL_NUMBER=685105071
 elif [ "$DEVICE" = "WB2" ]; then
     echo -e "\n${GREEN}WB2 selected ${RESET}"
-    SERIAL_NUMBER=685726740
+    NRF_VERSION=NRF52833_XXAA
+    SERIAL_NUMBER=685526694
 elif [ "$DEVICE" = "WB3" ]; then
     echo -e "\n${GREEN}WB3 selected ${RESET}"
+    NRF_VERSION=NRF52833_XXAA
     SERIAL_NUMBER=685239688
+elif [ "$DEVICE" = "WB4" ]; then
+    echo -e "\n${GREEN}WB4 selected ${RESET}"
+    NRF_VERSION=NRF52833_XXAA
+    SERIAL_NUMBER=685726740
+elif [ "$DEVICE" = "WB5" ]; then
+    echo -e "\n${GREEN}WB4 selected ${RESET}"
+    NRF_VERSION=NRF52840_XXAA
+    SERIAL_NUMBER=683815900
 else
     echo -e "\n${RED}THE DEVICE YOU ARE TRYING TO REACH, ${DEVICE}, DOES NOT EXIST"
     echo -e "\n Available devices are WB1, WB2 and WB3 ${RESET}\n"
@@ -66,8 +75,7 @@ fi
 
 TOOLCHAIN_PREFIX=arm-none-eabi
 # Assume the tools are on the system path
-TOOLCHAIN_PATH=
-JLINK_OPTIONS="-device NRF52833_XXAA -USB $SERIAL_NUMBER -if swd -speed 1000"
+JLINK_OPTIONS="-device $NRF_VERSION -USB $SERIAL_NUMBER -if swd -speed 1000"
 
 JLINK="/home/ct/Downloads/JLink_Linux_V682c_arm/JLinkExe $JLINK_OPTIONS"
 JLINKGDBSERVER="/home/ct/Downloads/JLink_Linux_V682c_arm/JLinkGDBServer $JLINK_OPTIONS"
@@ -120,25 +128,6 @@ elif [ "$1" = "--flash" ]; then
     echo "exit" >> $TMPSCRIPT
     $JLINK $TMPSCRIPT
     rm $TMPSCRIPT
-elif [ "$1" = "--flash-softdevice" ]; then
-    echo ""
-    echo -e "${STATUS_COLOR}flashing softdevice ${HEX}...${RESET}"
-    echo ""
-    # Halt, write to NVMC to enable erase, do erase all, wait for completion. reset
-    echo "h"  > $TMPSCRIPT
-    echo "w4 4001e504 2" >> $TMPSCRIPT
-    echo "w4 4001e50c 1" >> $TMPSCRIPT
-    echo "sleep 100" >> $TMPSCRIPT
-    echo "r" >> $TMPSCRIPT
-    # Halt, write to NVMC to enable write. Write mainpart, write UICR. Assumes device is erased.
-    echo "h" >> $TMPSCRIPT
-    echo "w4 4001e504 1" >> $TMPSCRIPT
-    echo "loadfile $HEX" >> $TMPSCRIPT
-    echo "r" >> $TMPSCRIPT
-    echo "g" >> $TMPSCRIPT
-    echo "exit" >> $TMPSCRIPT
-    $JLINK $TMPSCRIPT
-    rm $TMPSCRIPT
 elif [ "$1" = "--rtt" ]; then
     # trap the SIGINT signal so we can clean up if the user CTRL-C's out of the
     # RTT client
@@ -147,7 +136,7 @@ elif [ "$1" = "--rtt" ]; then
         return
     }
     echo -e "${STATUS_COLOR}Starting RTT Server...${RESET}"
-    JLinkExe -device NRF52833_XXAA -USB $SERIAL_NUMBER -if swd -speed 1000 &
+    JLinkExe -device $NRF_VERSION -USB $SERIAL_NUMBER -if swd -speed 1000 &
     JLINK_PID=$!
     sleep 1
     echo -e "\n${STATUS_COLOR}Connecting to RTT Server...${RESET}"
